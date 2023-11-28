@@ -12,5 +12,6 @@ The interface is pretty self-explainatory, I hope.
 * refactor `main.js`, maybe use web workers
 * refactor `old/gene.js` and `old/compute.js` while trying not to break compatibility
 * if the old canvas is still busy while the form is submitted, the worker should drop the old job and take on the new one
-* instead of `console.log`ing the performance info I should print it directly on the webpage
+* fix the timestamp on the shader running one hour behind (it is currently daylight savings time)
+* add an option to save a high resolution version of the image to disk (and maybe the shader itself?)
 * turn the checkbox into a toggleswitch using css black magic

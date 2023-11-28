@@ -5,15 +5,6 @@ import {webglRenderFrag} from "./webgl.js"
 import * as compute from "./port/compute.js"
 import * as glsl from "./port/glsl/glsl.js"
 
-function jobDescription(jobParams) {
-    const [size, seed] = jobParams;
-    var description = `seed:"${seed}"`;
-    if(size !== undefined) {
-        description += `, size: "${size}"`
-    }
-    return `(${description})`;
-}
-
 function getJobParameters() {
     const seed = document.getElementById("seed").value;
     var size = parseInt(document.getElementById("dnaSize").value);
@@ -22,21 +13,29 @@ function getJobParameters() {
     return [size, seed];
 }
 
+const oldCanvasPerformance = document.getElementById("oldCanvasPerformance");
+const webglCanvasPerformance = document.getElementById("webglCanvasPerformance");
+
+const canvas = document.getElementById("oldCanvas");
+const resolution = parseInt(canvas.getAttribute("width"));
+const ctx = canvas.getContext("2d");
+
 var useOldRenderer = true;
 var lastSubmittedJob = undefined;
 function toggleOldRenderer() {
     var toggle =  document.getElementById("oldRendererToggle");
-
     useOldRenderer = !useOldRenderer;
+
+    if(!useOldRenderer) {
+        oldCanvasPerformance.innerHTML = '';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+    }
     if(useOldRenderer && lastSubmittedJob !== undefined) {
         const [size, seed] = lastSubmittedJob;
         paintOldPicture(size, seed);
     }
 }
-
-const canvas = document.getElementById("oldCanvas");
-const resolution = parseInt(canvas.getAttribute("width"));
-const ctx = canvas.getContext("2d");
 
 var oldStart = undefined;
 var oldEnd = undefined;
@@ -66,7 +65,7 @@ function paintOldPictureLine(rna, j) {
         ctx.putImageData(imageData, 0, j);
         if(j==resolution-1) {
             oldEnd = performance.now();
-            console.log(`OLD ${jobDescription(lastSubmittedJob)} : ${((oldEnd-oldStart)/1000.0).toFixed(2)} seconds`);
+            oldCanvasPerformance.innerHTML = `${((oldEnd-oldStart)/1000.0).toFixed(2)} s`;
         }
     }
 }
@@ -96,7 +95,6 @@ async function submitJob() {
     lastSubmittedJob = [size, seed];
 
     paintOldPicture(size, seed);
-    
 
     const webglStart = performance.now();
     
@@ -104,5 +102,5 @@ async function submitJob() {
     document.getElementById("glslCodeBox").innerHTML = await paintNewPicture(size, seed);
     
     const webglEnd = performance.now();
-    console.log(`WEBGL ${jobDescription(lastSubmittedJob)} : ${(webglEnd-webglStart).toFixed(2)} milliseconds`);
+    webglCanvasPerformance.innerHTML = `${(webglEnd-webglStart).toFixed(2)} ms`;
 }
