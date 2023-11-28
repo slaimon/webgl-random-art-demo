@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./base.css">
+    <title>( demo )</title>
+</head>
+<body id="document">
+    <div id="parent">
+        <div id="sideBar">
+            <div>
+                <div class="topRightToggle">
+                    <button id="advancedToggle" name="advanced controls">Show advanced controls</button>
+                </div>
+                <div>
+                    <h4>Controls</h4>
+                    <form id="input" onsubmit="return false;">
+                        <div id="controls">
+                            <input id="seed" type="text" value="" autocomplete="off">
+                            <input id="paintButton" type="submit" value="Paint">
+                            <br><br>
+                            <span id="advancedControls" style="display: none;">
+                                <label for="dnaSize">DNA size:</label>
+                                <input id="dnaSize" type="text" value="" size="3" maxlength="3" max="200" autocomplete="off">
+                                <input type="reset">
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="listingArea">
+                <div class="topRightToggle">
+                    <button id="genomeToggle" name="genome">Hide genome</button>
+                </div>
+                <div id="genomeListing">
+                    <h4>Genome viewer</h4>
+                    <textarea id="genomeListingBox" readonly="true" cols=30 rows=20 value="" autocomplete="off"></textarea>
+                </div>
+            </div>
+        </div>
+        <div id="oldRenderer" class="renderer">
+            <div class="topRightToggle">
+                <input type="checkbox" id="oldRendererToggle" name="oldRendererToggle" checked autocomplete="off"/>
+            </div>
+            <h4>Old renderer viewport</h4>
+            <canvas id="oldCanvas" width="400" height="400"></canvas>
+            <p id="oldCanvasPerformance"></p>
+        </div>
+        <div id="newRenderer" class="renderer">
+            <h4>WebGL viewport</h4>
+            <canvas id="webglCanvas" width="400" height="400"></canvas>
+            <p id="webglCanvasPerformance"></p>
+        </div>
+        <div id="glslSourceArea">
+            <div class="topRightToggle">
+                <button id="sourceToggle" name="source">Show source</button>
+            </div>
+            <div id="glslCodeOutput" style="display: none;">
+                <h4>Generated fragment shader</h4>
+                <textarea id="glslCodeBox" readonly="true" cols="150" rows="50" value=""></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="module">
+    import {submitJob, toggleOldRenderer} from "./main.js"
+    document.addEventListener("submit", submitJob);
+    document.getElementById("oldRendererToggle").addEventListener("click", toggleOldRenderer);
+
+    function createToggle(toggleId, elementId) {
+        document.getElementById(toggleId).addEventListener("click", displayToggle(toggleId, elementId));
+    }
+
+    function displayToggle(toggleId, elementId) {
+        return function () {
+            var element = document.getElementById(elementId);
+            var toggle = document.getElementById(toggleId);
+
+            if(element.style.display !== "none") {
+                element.style.display = "none";
+                toggle.innerHTML = "Show " + toggle.name;
+            } else {
+                element.style.display = "";
+                toggle.innerHTML = "Hide " + toggle.name;
+            }
+        }
+    }
+
+    createToggle("sourceToggle", "glslCodeOutput");
+    createToggle("genomeToggle", "genomeListing");
+    createToggle("advancedToggle", "advancedControls");
+</script>
+</html>

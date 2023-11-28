@@ -1,0 +1,114 @@
+:root {
+    --darkred: rgb(150,0,0);
+}
+
+#document {
+    background: palegoldenrod;
+    font-family: Arial, Helvetica, sans-serif;
+}
+canvas {
+    border: solid 1px black;
+    border-radius: 5px;
+}
+div {
+    border-radius: 10px;
+    padding: 10px;
+}
+form {
+    padding: 10px;
+}
+textarea {
+    background-color: lightgoldenrodyellow;
+}
+button,
+input[type=submit],
+input[type=reset] {
+    font-size: 10px;
+    color: black;
+    border: 1px solid;
+    border-radius: 3px;
+}
+input[type=text] {
+    background-color: lightgoldenrodyellow;
+}
+label {
+    font-size: small;
+}
+
+.topRightToggle {
+    float: right;
+    padding-top: 5px;
+    padding-right: 7px;
+    margin-top: 0%;
+}
+.topRightToggle > button {
+    background-color: inherit;
+}
+.renderer {
+    padding-bottom: 30px;
+}
+
+#parent {
+    display: grid;
+    text-align: center;
+    grid-template-columns: 1fr 2fr 2fr;
+    grid-template-rows: auto;
+    gap: 10px;
+    border: none;
+}
+#parent > div {
+    border: solid 1px black;
+}
+#sideBar {
+    padding: 10px;
+    background: lightgreen;
+    border-color: lightgreen;
+    grid-column: 1;
+    grid-row: 1 / 3;
+
+    display: block;
+    grid-template-rows: auto;
+    text-align: center;
+    gap: 10px;
+}
+#sideBar > div,
+#sideBar > form {
+    border: solid 1px green;
+    margin-bottom: 3%;
+    min-height: 30px;
+}
+#sideBar h4 {
+    text-align: left;
+    padding-left: 5px;
+}
+#controls {
+    padding: 0px;
+    text-align: left;
+}
+#advancedToggle,
+#genomeToggle {
+    color: green;
+}
+#sourceToggle {
+    color: var(--darkred);
+}
+#oldRenderer {
+    background: lightcoral;
+    border-color: lightcoral;
+}
+#oldRendererToggle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+#newRenderer {
+    background: lightskyblue;
+    border-color: lightskyblue;
+}
+#glslSourceArea {
+    min-height: 20px;
+    background: lightsalmon;
+    border-color: lightsalmon;
+    grid-column: 2 / 4;
+    grid-row: 2;
+}
