@@ -74,6 +74,7 @@ async function paintOldPicture(size, seed) {
     if (!useOldRenderer) {
         return;
     }
+    oldCanvasPerformance.innerHTML = '...running...';
     oldStart = performance.now();
 
     const rna = new_picture(size, seed);
@@ -84,6 +85,8 @@ async function paintOldPicture(size, seed) {
 
 async function paintNewPicture(size, seed) {
     const picture = compute.random_picture(size, seed);
+    document.getElementById("genomeListingBox").innerHTML = picture.gene_listing;
+    document.getElementById("dnaSize").placeholder = picture.params.size;
     const shader = glsl.create_shader(picture);
     webglRenderFrag(shader);
 
@@ -96,9 +99,9 @@ async function submitJob() {
 
     paintOldPicture(size, seed);
 
+    webglCanvasPerformance.innerHTML = '...';
     const webglStart = performance.now();
     
-    document.getElementById("genomeListingBox").innerHTML = compute.get_gene_listing(size, seed);
     document.getElementById("glslCodeBox").innerHTML = await paintNewPicture(size, seed);
     
     const webglEnd = performance.now();

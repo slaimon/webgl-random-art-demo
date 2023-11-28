@@ -104,15 +104,16 @@ function make_gene(size, seed_string) {
    var operators = reduce(operatorList);
    var seed = [leafNodePT, [leafNodeT, 0]];
    
-   return gene.optimize(
-             list.append(
-               gene.random_gene(operators, seed, ["vec3", 0], size),
-               seed)
-          );
+   return { gene: gene.optimize(
+                     list.append(
+                        gene.random_gene(operators, seed, ["vec3", 0], size),
+                        seed)),
+            size: size
+          };
 }
 
 function get_gene_listing(size, seed_string) {
-   var [env_seed , gene_seed] = util.split_name(seed_string);
+   var [ _ , gene_seed] = util.split_name(seed_string);
    var new_gene = make_gene(size, gene_seed);
    
    return gene.string_of_gene(new_gene);
@@ -123,17 +124,17 @@ function random_picture(size, seed_string) {
    
    var env = make_env(env_seed);
    var g = make_gene(size, gene_seed);
-   var dna = compile(g, env);
+   compile(g.gene, env);
    
    // resetto la variabile globale
    const choices = random_choices;
    random_choices = {};
    
-   return { gene_listing: gene.string_of_gene(g),
+   return { gene_listing: gene.string_of_gene(g.gene),
             choices: choices,
             params: {
                seed: seed_string,
-               size: (size)?(size):("[default dna size]")
+               size: g.size
             }
           };
 }

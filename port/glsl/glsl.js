@@ -211,7 +211,7 @@ function get_timestamp() {
    const options = { year: 'numeric', month: 'short', day: 'numeric',
                      hour: 'numeric', minute: 'numeric'};
    
-   return now.toLocaleDateString('en-UK', options);
+   return now.toLocaleDateString('en-UK', options) + " GMT";
 }
 
 function make_about(params) {

@@ -9,27 +9,24 @@
 <body id="document">
     <div id="parent">
         <div id="sideBar">
-            <div>
+            <div id="controlPanel">
                 <div class="topRightToggle">
                     <button id="advancedToggle" name="advanced controls">Show advanced controls</button>
                 </div>
                 <div>
                     <h4>Controls</h4>
                     <form id="input" onsubmit="return false;">
-                        <div id="controls">
-                            <input id="seed" type="text" value="" autocomplete="off">
-                            <input id="paintButton" type="submit" value="Paint">
-                            <br><br>
-                            <span id="advancedControls" style="display: none;">
-                                <label for="dnaSize">DNA size:</label>
-                                <input id="dnaSize" type="text" value="" size="3" maxlength="3" max="200" autocomplete="off">
-                                <input type="reset">
-                            </span>
-                        </div>
+                        <input id="seed" type="text" value="" autocomplete="off">
+                        <input id="paintButton" type="submit" value="Paint">
+                        <br><br>
+                        <span id="advancedControls" style="display: none;">
+                            <label for="dnaSize">DNA size:</label>
+                            <input id="dnaSize" type="text" value="" size="3" maxlength="3" autocomplete="off">
+                        </span>
                     </form>
                 </div>
             </div>
-            <div id="listingArea">
+            <div id="genomePanel">
                 <div class="topRightToggle">
                     <button id="genomeToggle" name="genome">Hide genome</button>
                 </div>
@@ -45,12 +42,12 @@
             </div>
             <h4>Old renderer viewport</h4>
             <canvas id="oldCanvas" width="400" height="400"></canvas>
-            <p id="oldCanvasPerformance"></p>
+            <p id="oldCanvasPerformance">_____</p>
         </div>
         <div id="newRenderer" class="renderer">
             <h4>WebGL viewport</h4>
             <canvas id="webglCanvas" width="400" height="400"></canvas>
-            <p id="webglCanvasPerformance"></p>
+            <p id="webglCanvasPerformance">_____</p>
         </div>
         <div id="glslSourceArea">
             <div class="topRightToggle">
