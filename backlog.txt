@@ -1,3 +1,0 @@
-- un timer sotto ciascun viewport che alla fine del rendering dice quanto tempo ha impiegato
-- usare un toggle switch per l'old renderer anziché un pulsantino
-- interruzione del vecchio job quando ne viene richiesto uno nuovo (pro tip: puoi sfruttare la variabile "lastSubmittedJob")
