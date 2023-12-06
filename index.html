@@ -9,30 +9,56 @@
 <body id="document">
     <div id="parent">
         <div id="sideBar">
-            <div id="controlPanel">
+            <div id="controlPanel" class="sideBarPanel">
                 <div class="topRightToggle">
                     <button id="advancedToggle" name="advanced controls">Show advanced controls</button>
                 </div>
                 <div>
                     <h4>Controls</h4>
-                    <form id="input" onsubmit="return false;">
+                    <form id="input" onsubmit="return false;" class="indentedContainer">
                         <input id="seed" type="text" value="" autocomplete="off">
                         <input id="paintButton" type="submit" value="Paint">
-                        <br><br>
                         <span id="advancedControls" style="display: none;">
-                            <label for="dnaSize">DNA size:</label>
-                            <input id="dnaSize" type="text" value="" size="3" maxlength="3" autocomplete="off">
+                            <hr style="background-color: green; border: none; height: 1px; margin: 0.5em 0 0.5em 0;">
+                            <label for="dnaSize">DNA size:
+                                <input id="dnaSize" type="text" class="labeledElement" value="" size="3" maxlength="3" autocomplete="off">
+                            </label>
                         </span>
                     </form>
                 </div>
             </div>
-            <div id="genomePanel">
+            <div id="genomePanel" class="sideBarPanel">
                 <div class="topRightToggle">
                     <button id="genomeToggle" name="genome">Hide genome</button>
                 </div>
                 <div id="genomeListing">
                     <h4>Genome viewer</h4>
-                    <textarea id="genomeListingBox" readonly="true" cols=30 rows=20 value="" autocomplete="off"></textarea>
+                    <div class="indentedContainer">
+                        <textarea id="genomeListingBox" readonly="true" cols=30 rows=10 value="" autocomplete="off"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="exportPanel" class="sideBarPanel">
+                <div class="topRightToggle" id="exportMessage" style="font-size: small;"></div>
+                <div>
+                    <h4>Export</h4>
+                    <div id="sourceArea" class="indentedContainer">
+                        <label for="sourceButtons">Source code:</label>
+                        <div id="sourceButtons" class="labeledElement container">
+                            <input id="copySourceButton" type="button" value="copy">
+                            <input id="downloadSourceButton" type="button" value="download">
+                        </div>
+                    </div>
+                    <hr style="background-color: green; border: none; height: 1px;">
+                    <div id="saveImageArea" class="indentedContainer">
+                        <label for="resolutionControl" style="text-align: center; float: none; margin: 0;">Resolution:</label>
+                        <fieldset id="resolutionControl" style="border: none; padding: 0px; display: flex; justify-content: center;">                  
+                            <input type="text" id="imageWidth" class="labeledElement" placeholder="1024" size="4" maxlength="4">
+                            <span class="separator">x</span>
+                            <input type="text" id="imageHeight" class="labeledElement" placeholder="1024" size="4" maxlength="4">
+                        </fieldset>
+                        <input id="saveImageButton" type="button" value="Save this image">
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,28 +68,26 @@
             </div>
             <h4>Old renderer viewport</h4>
             <canvas id="oldCanvas" width="400" height="400"></canvas>
-            <p id="oldCanvasPerformance">_____</p>
+            <p id="oldCanvasPerformance">&nbsp</p>
         </div>
         <div id="newRenderer" class="renderer">
             <h4>WebGL viewport</h4>
             <canvas id="webglCanvas" width="400" height="400"></canvas>
-            <p id="webglCanvasPerformance">_____</p>
-        </div>
-        <div id="glslSourceArea">
-            <div class="topRightToggle">
-                <button id="sourceToggle" name="source">Show source</button>
-            </div>
-            <div id="glslCodeOutput" style="display: none;">
-                <h4>Generated fragment shader</h4>
-                <textarea id="glslCodeBox" readonly="true" cols="150" rows="50" value=""></textarea>
-            </div>
+            <p id="webglCanvasPerformance">&nbsp</p>
         </div>
     </div>
 </body>
 <script type="module">
-    import {submitJob, toggleOldRenderer} from "./main.js"
+    import {submitJob, toggleOldRenderer,
+            copyGlslSource, saveGlslSource,
+            savePicture} from "./main.js"
+
     document.addEventListener("submit", submitJob);
     document.getElementById("oldRendererToggle").addEventListener("click", toggleOldRenderer);
+
+    document.getElementById("copySourceButton").addEventListener("click", copyGlslSource);
+    document.getElementById("downloadSourceButton").addEventListener("click", saveGlslSource);
+    document.getElementById("saveImageButton").addEventListener("click", savePicture);
 
     function createToggle(toggleId, elementId) {
         document.getElementById(toggleId).addEventListener("click", displayToggle(toggleId, elementId));
@@ -78,14 +102,12 @@
                 element.style.display = "none";
                 toggle.innerHTML = "Show " + toggle.name;
             } else {
-                element.style.display = "";
+                element.style.display = "grid";
                 toggle.innerHTML = "Hide " + toggle.name;
             }
         }
     }
-
-    createToggle("sourceToggle", "glslCodeOutput");
-    createToggle("genomeToggle", "genomeListing");
+    createToggle("genomeToggle", "genomeListingBox");
     createToggle("advancedToggle", "advancedControls");
 </script>
 </html>

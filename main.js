@@ -1,4 +1,4 @@
-export {submitJob, toggleOldRenderer}
+export {submitJob, toggleOldRenderer, copyGlslSource, saveGlslSource, savePicture}
 
 import {new_picture, compute_pixel} from "./old/gen.js"
 import {webglRenderFrag} from "./webgl.js"
@@ -27,7 +27,7 @@ function toggleOldRenderer() {
     useOldRenderer = !useOldRenderer;
 
     if(!useOldRenderer) {
-        oldCanvasPerformance.innerHTML = '';
+        oldCanvasPerformance.innerHTML = " ";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
     }
@@ -88,11 +88,14 @@ async function paintNewPicture(size, seed) {
     document.getElementById("genomeListingBox").innerHTML = picture.gene_listing;
     document.getElementById("dnaSize").placeholder = picture.params.size;
     const shader = glsl.create_shader(picture);
-    webglRenderFrag(shader);
+
+    var canvas = document.getElementById("webglCanvas");
+    webglRenderFrag(shader, canvas);
 
     return shader;
 }
 
+var glslSource;
 async function submitJob() {
     const [size, seed] = getJobParameters();
     lastSubmittedJob = [size, seed];
@@ -102,8 +105,71 @@ async function submitJob() {
     webglCanvasPerformance.innerHTML = '...';
     const webglStart = performance.now();
     
-    document.getElementById("glslCodeBox").innerHTML = await paintNewPicture(size, seed);
+    glslSource = await paintNewPicture(size, seed);
     
     const webglEnd = performance.now();
     webglCanvasPerformance.innerHTML = `${(webglEnd-webglStart).toFixed(2)} ms`;
+}
+
+var exportMessage = document.getElementById("exportMessage");
+
+function copyGlslSource() {
+    if (glslSource) {
+        navigator.clipboard.writeText(glslSource);
+        exportMessage.innerHTML = "Copied to clipboard!";
+    } else {
+        exportMessage.innerHTML = "Paint a picture first!";
+    }
+}
+
+function saveGlslSource() {
+    if (glslSource) {
+        const dataURL = "data:text/plain;charset=utf-8," + encodeURIComponent(glslSource);
+        download("test.frag", dataURL);
+        exportMessage.innerHTML = "Download started...";
+    } else {
+        exportMessage.innerHTML = "Paint a picture first!";
+    }
+}
+
+function savePicture() {
+    if (glslSource) {
+        exportMessage.innerHTML = "Rendering...";
+        setTimeout(savePictureAux, 50);
+    } else {
+        exportMessage.innerHTML = "Paint a picture first!";
+    }
+}
+
+async function savePictureAux() {
+    var width = parseInt(document.getElementById("imageWidth").value);
+    width = width ? width : parseInt(document.getElementById("imageWidth").placeholder);
+    var height = parseInt(document.getElementById("imageHeight").value);
+    height = height ? height : parseInt(document.getElementById("imageHeight").placeholder);
+
+    var canvas = createCanvas(width, height);
+    await webglRenderFrag(glslSource, canvas);
+
+    download("test.png", canvas.toDataURL("image/png"));
+    exportMessage.innerHTML = "Done!"
+}
+
+function download(filename, dataURL) {
+    var element = document.createElement('a');
+    element.setAttribute('href', dataURL);
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
+  function createCanvas(width, height) {
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute("width", width);
+    canvas.setAttribute("height", height);
+    return canvas;
 }

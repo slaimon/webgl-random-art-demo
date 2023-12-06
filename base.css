@@ -14,26 +14,43 @@ div {
     border-radius: 10px;
     padding: 10px;
 }
-form {
-    padding: 10px;
-}
 textarea {
     background-color: lightgoldenrodyellow;
 }
 button,
 input[type=submit],
-input[type=reset] {
-    font-size: 10px;
+input[type=reset],
+input[type=button] {
+    font-size: x-small;
     color: black;
     border: 1px solid;
     border-radius: 3px;
+    margin: 3px;
 }
 input[type=text] {
     background-color: lightgoldenrodyellow;
+    border: 1px solid;
+    border-radius: 3px;
+}
+textarea[readonly=true] {
+    background-color: lightgoldenrodyellow;
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+hr {
+    margin: 0;
+    align-self: stretch;
 }
 label {
+    float: left;
+    width: 6em;
+    margin-right: 1em;
+    margin: 0.25em 1em 0.25em 0;
     font-size: small;
     font-family: sans-serif;
+}
+.labeledElement {
+    vertical-align: top;
 }
 
 .topRightToggle {
@@ -44,9 +61,19 @@ label {
 }
 .topRightToggle > button {
     background-color: inherit;
+    margin: 0px;
 }
-.renderer {
-    padding-bottom: 30px;
+.container {
+    padding: 0px;
+}
+.indentedContainer{
+    text-align: left;
+    padding: 0px;
+    padding-left: 2%;
+}
+.separator {
+    margin: 0 10px;
+    font-size: medium;
 }
 
 #parent {
@@ -69,48 +96,41 @@ label {
 
     display: block;
     grid-template-rows: auto;
-    text-align: center;
+    text-align: left;
     gap: 10px;
 }
-#sideBar > div,
-#sideBar > form {
+.sideBarPanel {
     border: solid 1px green;
+    min-height: 10px;
+}
+#genomePanel,
+#controlPanel {
     margin-bottom: 3%;
-    min-height: 30px;
 }
 #sideBar h4 {
     margin-top: 0px;
-    text-align: left;
-    padding-left: 5px;
+    padding-left: 1.5%;
 }
-#input {
-    padding: 0px;
-    text-align: left;
+#exportPanel div {
+    margin: 5px;
+}
+#saveImageArea {
+    text-align: center;
 }
 #advancedToggle,
 #genomeToggle {
     color: green;
-}
-#sourceToggle {
-    color: var(--darkred);
 }
 #oldRenderer {
     background: lightcoral;
     border-color: lightcoral;
 }
 #oldRendererToggle {
-    width: 20px;
-    height: 20px;
+    width: 1.5em;
+    height: 1.5em;
     border-radius: 50%;
 }
 #newRenderer {
     background: lightskyblue;
     border-color: lightskyblue;
-}
-#glslSourceArea {
-    min-height: 20px;
-    background: lightsalmon;
-    border-color: lightsalmon;
-    grid-column: 2 / 4;
-    grid-row: 2;
 }

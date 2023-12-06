@@ -12,8 +12,8 @@ If you experience problems of any kind, or you have suggestions to improve the U
 
 ## Backlog
 
-* refactor `main.js`, maybe use web workers
+* refactor `main.js`
 * refactor `old/gene.js` and `old/compute.js` while trying not to break compatibility
 * if the old canvas is still busy while the form is submitted, the worker should drop the old job and take on the new one
-* add an option to save a high resolution version of the image to disk (and maybe the shader itself?)
+* avoid stretching out the exported image when the aspect ratio is not 1:1
 * turn the checkbox into a toggleswitch using css black magic

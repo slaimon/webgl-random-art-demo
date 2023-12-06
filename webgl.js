@@ -44,6 +44,7 @@ function makeBuffer(gl) {
              1.0,  1.0  ]),
         gl.STATIC_DRAW
     );
+    return buffer;
 }
 
 function render() {
@@ -58,8 +59,8 @@ function render() {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 }
 
-function webglRenderFrag(fragmentShaderSource) {
-    canvas = document.getElementById("webglCanvas");
+async function webglRenderFrag(fragmentShaderSource, glCanvas) {
+    canvas = glCanvas;
     gl = canvas.getContext("experimental-webgl");
     gl.viewport(0,0,gl.drawingBufferWidth, gl.drawingBufferHeight);
 
