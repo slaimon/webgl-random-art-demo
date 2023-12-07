@@ -8,7 +8,7 @@ import * as glsl from "./port/glsl/glsl.js"
 function getJobParameters() {
     const seed = document.getElementById("seed").value;
     var size = parseInt(document.getElementById("dnaSize").value);
-    if(!size) size = undefined;
+    if(!size) size = compute.get_default_size(seed);
 
     return [size, seed];
 }
@@ -84,6 +84,8 @@ async function paintOldPicture(size, seed) {
 }
 
 async function paintNewPicture(size, seed) {
+    const webglStart = performance.now();
+
     const picture = compute.random_picture(size, seed);
     document.getElementById("genomeListingBox").innerHTML = picture.gene_listing;
     document.getElementById("dnaSize").placeholder = picture.params.size;
@@ -91,6 +93,9 @@ async function paintNewPicture(size, seed) {
 
     var canvas = document.getElementById("webglCanvas");
     webglRenderFrag(shader, canvas);
+
+    const webglEnd = performance.now();
+    webglCanvasPerformance.innerHTML = `${(webglEnd-webglStart).toFixed(2)} ms`;
 
     return shader;
 }
@@ -100,15 +105,10 @@ async function submitJob() {
     const [size, seed] = getJobParameters();
     lastSubmittedJob = [size, seed];
 
-    paintOldPicture(size, seed);
+    document.getElementById("filename").placeholder = makeFilename(size, seed);
 
-    webglCanvasPerformance.innerHTML = '...';
-    const webglStart = performance.now();
-    
+    paintOldPicture(size, seed);
     glslSource = await paintNewPicture(size, seed);
-    
-    const webglEnd = performance.now();
-    webglCanvasPerformance.innerHTML = `${(webglEnd-webglStart).toFixed(2)} ms`;
 }
 
 var exportMessage = document.getElementById("exportMessage");
@@ -122,10 +122,23 @@ function copyGlslSource() {
     }
 }
 
+function makeFilename(size, seed) {
+    var filename = seed + " - " + size;
+    return filename.replaceAll(/\*|\/|\\|\||\+|:|<|>|\?|,|\.|;|=|\[|\]/g, "_");
+}
+
+function getFilename() {
+    var name = document.getElementById("filename").value;
+    if(name)
+        return name;
+    else
+        return document.getElementById("filename").placeholder;
+}
+
 function saveGlslSource() {
     if (glslSource) {
         const dataURL = "data:text/plain;charset=utf-8," + encodeURIComponent(glslSource);
-        download("test.frag", dataURL);
+        download(`${getFilename()}.frag`, dataURL);
         exportMessage.innerHTML = "Download started...";
     } else {
         exportMessage.innerHTML = "Paint a picture first!";
@@ -150,7 +163,7 @@ async function savePictureAux() {
     var canvas = createCanvas(width, height);
     await webglRenderFrag(glslSource, canvas);
 
-    download("test.png", canvas.toDataURL("image/png"));
+    download(`${getFilename()}.png`, canvas.toDataURL("image/png"));
     exportMessage.innerHTML = "Done!"
 }
 

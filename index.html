@@ -15,13 +15,16 @@
                 </div>
                 <div>
                     <h4>Controls</h4>
-                    <form id="input" onsubmit="return false;" class="indentedContainer">
-                        <input id="seed" type="text" value="" autocomplete="off">
-                        <input id="paintButton" type="submit" value="Paint">
+                    <form id="input" onsubmit="return false;" class="indentedContainer" style="display: grid;">
+                        <label for="mainControl">Seed:</label>
+                        <div id="mainControl" class="container">
+                            <input id="seed" type="text" class="labeledElement" value="" autocomplete="off">
+                            <input id="paintButton" type="submit" value="Paint">
+                        </div>
                         <span id="advancedControls" style="display: none;">
-                            <hr style="background-color: green; border: none; height: 1px; margin: 0.5em 0 0.5em 0;">
-                            <label for="dnaSize">DNA size:
-                                <input id="dnaSize" type="text" class="labeledElement" value="" size="3" maxlength="3" autocomplete="off">
+                            <hr style="background-color: green; border: none; height: 1px; margin: 0.5em 0;">
+                            <label for="dnaSize" style="margin: 0;">DNA size:
+                                <input id="dnaSize" type="text" class="labeledElement" value="" size="3" maxlength="3" autocomplete="off" style="margin-top: 0.25em;">
                             </label>
                         </span>
                     </form>
@@ -33,7 +36,7 @@
                 </div>
                 <div id="genomeListing">
                     <h4>Genome viewer</h4>
-                    <div class="indentedContainer">
+                    <div class="indentedContainer" style="text-align: center;">
                         <textarea id="genomeListingBox" readonly="true" cols=30 rows=10 value="" autocomplete="off"></textarea>
                     </div>
                 </div>
@@ -42,6 +45,10 @@
                 <div class="topRightToggle" id="exportMessage" style="font-size: small;"></div>
                 <div>
                     <h4>Export</h4>
+                    <div id="nameArea" class="indentedContainer" style="display: flex; justify-content: center; align-items: center;">
+                        <label for="fileName">File name:</label>
+                        <input type="text" id="filename" class="labeledElement" value="" autocomplete="off">
+                    </div>
                     <div id="sourceArea" class="indentedContainer">
                         <label for="sourceButtons">Source code:</label>
                         <div id="sourceButtons" class="labeledElement container">

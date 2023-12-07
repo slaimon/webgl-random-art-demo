@@ -7,7 +7,8 @@ import { operatorList, leafNodePT, leafNodeT } from "./operator-objects.js"
 export {
    compile,
    random_picture,
-   get_gene_listing
+   get_gene_listing,
+   get_default_size
 }
 
 var default_color = util.color_of_rgb(0.0, 0.0, 0.0);
@@ -110,6 +111,13 @@ function make_gene(size, seed_string) {
                         seed)),
             size: size
           };
+}
+
+function get_default_size(seed_string) {
+   var [ _ , gene_seed ] = util.split_name(seed_string);
+   util.prng_init(gene_seed);
+
+   return util.rnd_int(120,200);
 }
 
 function get_gene_listing(size, seed_string) {
