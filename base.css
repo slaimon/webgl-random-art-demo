@@ -72,6 +72,12 @@ fieldset {
     margin: 10px;
     
 }
+.sidebar .icon {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    filter: invert(17%) sepia(70%) saturate(4671%) hue-rotate(93deg) brightness(98%) contrast(105%);
+}
 .sidebar hr {
     background-color: green;
     border: none;

@@ -8,65 +8,72 @@
 </head>
 <body id="document">
     <div class="header">
-        <div class="sidebar">
-            <div class="panel" name="Control Panel">
-                <div class="panelControlArea">
-                    <button id="advancedToggle" name="advanced controls">Show advanced controls</button>
-                </div>
-                <h2>Controls</h2>
-                <div class="panelContent">
-                    <form onsubmit="return false;">
-                        <label for="seedInput">Seed:</label>
-                        <div id="seedInput">
-                            <input id="seed" type="text" class="labeledElement" autocomplete="off">
-                            <input id="paintButton" type="submit" value="Paint">
-                        </div>
-                        <div id="advancedControls" style="display: none;">
-                            <hr>
-                            <label for="dnaSize">DNA size:</label>
-                            <input id="dnaSize" type="text" class="labeledElement" size="3" maxlength="3" autocomplete="off">
-                        </div>
-                    </form>
-                </div>
+        <div id="sidebar" class="sidebar">
+            <div class="panelControlArea" style="display: flex; align-items: center; margin: 10px;">
+                <button id="sidebarToggle" name="">
+                    <img class="icon" src="./resources/hamburger.svg"></img>
+                </button>
             </div>
-            <div class="panel" id="genomePanel" name="Genome Panel">
-                <div class="panelControlArea">
-                    <button id="genomeToggle" name="genome">Show genome</button>
-                </div>
-                <h2>Genome Viewer</h2>
-                <div class="panelContent">
-                    <div>
-                        <textarea id="genomeListingBox" readonly="true" cols=25 rows=10 value="" autocomplete="off" style="display: none;"></textarea>
+            <div id="sidebarContent">
+                <div class="panel" name="Control Panel">
+                    <div class="panelControlArea">
+                        <button id="advancedToggle" name="advanced controls">Show advanced controls</button>
+                    </div>
+                    <h2>Controls</h2>
+                    <div class="panelContent">
+                        <form onsubmit="return false;">
+                            <label for="seedInput">Seed:</label>
+                            <div id="seedInput">
+                                <input id="seed" type="text" class="labeledElement" autocomplete="off">
+                                <input id="paintButton" type="submit" value="Paint">
+                            </div>
+                            <div id="advancedControls" style="display: none;">
+                                <hr>
+                                <label for="dnaSize">DNA size:</label>
+                                <input id="dnaSize" type="text" class="labeledElement" size="3" maxlength="3" autocomplete="off">
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="panel" name="Export Panel" id="exportPanel">
-                <div class="panelControlArea">
-                    <p id="exportMessage">&nbsp</p>
+                <div class="panel" id="genomePanel" name="Genome Panel">
+                    <div class="panelControlArea">
+                        <button id="genomeToggle" name="genome">Show genome</button>
+                    </div>
+                    <h2>Genome Viewer</h2>
+                    <div class="panelContent">
+                        <div>
+                            <textarea id="genomeListingBox" readonly="true" cols=30 rows=10 value="" autocomplete="off" style="display: none;"></textarea>
+                        </div>
+                    </div>
                 </div>
-                <h2>Export
-                    <div name="Filename Area">
-                        <label for="filename" style="font-weight: normal; width: 5em;">File name:</label>
-                        <input type="text" id="filename" class="labeledElement" autocomplete="off">
+                <div class="panel" name="Export Panel" id="exportPanel">
+                    <div class="panelControlArea">
+                        <p id="exportMessage">&nbsp</p>
                     </div>
-                </h2>
-                <div class="panelContent">
-                    <div name="Source Area">
-                        <label for="sourceButtons">Source code:</label>
-                        <span id="sourceButtons" class="labeledElement">
-                            <input id="copySourceButton" type="button" value="copy">
-                            <input id="downloadSourceButton" type="button" value="download">
-                        </span>
-                    </div>
-                    <hr>
-                    <div name="Picture Area">
-                        <label for="resolutionInput">Resolution:</label>
-                        <fieldset id="resolutionInput" class="labeledElement">                  
-                            <input type="text" id="imageWidth" placeholder="1024" size="4" maxlength="4">
-                            <span class="separator">&nbsp x &nbsp</span>
-                            <input type="text" id="imageHeight" placeholder="1024" size="4" maxlength="4">
-                        </fieldset>
-                        <input id="saveImageButton" type="button" value="Save this picture">
+                    <h2>Export
+                        <div name="Filename Area">
+                            <label for="filename" style="font-weight: normal; width: 5em;">File name:</label>
+                            <input type="text" id="filename" class="labeledElement" autocomplete="off">
+                        </div>
+                    </h2>
+                    <div class="panelContent">
+                        <div name="Source Area">
+                            <label for="sourceButtons">Source code:</label>
+                            <span id="sourceButtons" class="labeledElement">
+                                <input id="copySourceButton" type="button" value="copy">
+                                <input id="downloadSourceButton" type="button" value="download">
+                            </span>
+                        </div>
+                        <hr>
+                        <div name="Picture Area">
+                            <label for="resolutionInput">Resolution:</label>
+                            <fieldset id="resolutionInput" class="labeledElement">                  
+                                <input type="text" id="imageWidth" placeholder="1024" size="4" maxlength="4">
+                                <span class="separator">&nbsp x &nbsp</span>
+                                <input type="text" id="imageHeight" placeholder="1024" size="4" maxlength="4">
+                            </fieldset>
+                            <input id="saveImageButton" type="button" value="Save this picture">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,6 +124,27 @@
     function createToggle(toggleId, elementId) {
         document.getElementById(toggleId).addEventListener("click", displayToggle(toggleId, elementId));
     }
+
+    sidebarContent = document.getElementById("sidebarContent");
+    sidebar = document.getElementById("sidebar");
+    function hideSidebar() {
+        sidebarContent.style.display = "none";
+        sidebar.style.width = "fit-content";
+    }
+    function showSidebar() {
+        sidebarContent.style.display = "flex";
+        sidebarContent.style.flexDirection = "column";
+        sidebar.style.width = "305px";
+    }
+    function toggleSidebar() {
+        if(sidebarContent.style.display === "none") {
+            showSidebar();
+        }
+        else {
+            hideSidebar();
+        }
+    }
+    document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar);
 
     createToggle("genomeToggle", "genomeListingBox");
     createToggle("advancedToggle", "advancedControls");
