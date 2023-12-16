@@ -2,36 +2,23 @@ import * as random from "./random.js"
 import * as list   from "./list.js"
 
 export {
-         pi,
          mod_float,
          range,
          rgb_range,
-         prob,
          rnd_int,
          rnd_float,
          split_name,
          nest,
          rnd_partition,
-         map_range,
          pick_exp,
          pick,
          pick_many,
          unionq,
-         color_of_rgb,
          rgb_of_color,
          rgb_of_hsl,
          rnd_color,
-         rgb_force,
-         palette_force,
-         mix,
-         mix3,
-         mix4,
-         minimize,
          prng_init,
-         rng_counter
-} 
-
-var pi = Math.PI;
+}
 
 // a%b ma generalizzato ai float
 function mod_float(a, b) {
@@ -68,14 +55,9 @@ function prng_init(str) {
   return random.full_init([0]);
 }
 
-var rng_counter = 0;
-
-// random probability
-function prob() { rng_counter += 1; return random.float(1.0); }
-
 // random number in interval
-function rnd_int(a, b) { rng_counter += 1; return a + random.int(b - a + 1); }
-function rnd_float(u, v) { rng_counter += 1; return u + random.float(v - u); }
+function rnd_int(a, b) { return a + random.int(b - a + 1); }
+function rnd_float(u, v) { return u + random.float(v - u); }
 
 // restituisce un sottoinsieme casuale di q elementi su un totale di k
 // il sottoinsieme è rappresentato da una lista ocaml di k elementi
@@ -187,18 +169,6 @@ function split_name(str) {
   }
 };
 
-// restituisce un array fatto più o meno così:
-// [f(a), [f(a+1), [f(a+2), ... [f(b-1), [f(b), 0]] ... ]]]
-// in altre parole: una lista stile ocaml che corrisponde a
-// [f(a), f(a+1), f(a+2), ... f(b-1), f(b), 0]
-// TODO viene usato in diverse funzioni di Gene
-function map_range(f, a, b) {
-  if (a > b) return 0;
-  var x = f(a);
-  var xs = map_range(f, a + 1, b);
-  return [x, xs];
-}
-
 // appends x to the end of the list iff no element in lst is === x
 function unionq(x, lst) {
   if (lst) {
@@ -216,9 +186,6 @@ function unionq(x, lst) {
             ///**    FUNZIONI SUI COLORI    **///
 
 
-// si spiega da sé
-function color_of_rgb(r, g, b) { return [r, g, b]; }
-
 // ???
 function range(a, b, min, max, x) {
    if (a === 0 && b === 0) {
@@ -235,7 +202,7 @@ function range(a, b, min, max, x) {
 function rgb_range(opt_min, opt_max, x) {
    var min = opt_min ? opt_min[0] : -1.0;
    var max = opt_max ? opt_max[0] : 1.0;
-   return min + (max - min) * (0.5 + Math.atan(2.0 * x) / pi);
+   return min + (max - min) * (0.5 + Math.atan(2.0 * x) / Math.PI);
  }
 
 // converte un vec3 da (-inf, +inf) a [0,255]
@@ -276,99 +243,9 @@ function rgb_of_hsl(h, sl, l) {
  }
 
 // random color in the rgb [0,255] range
-function rnd_color(param) {
+function rnd_color() {
    var r = rnd_float(-1.0, 1.0);
    var g = rnd_float(-1.0, 1.0);
    var b = rnd_float(-1.0, 1.0);
-   return color_of_rgb(r, g, b);
+   return [r, g, b];
  }
-
-// interessante funzione che da due colori diversi ne fa uno nuovo
-function rgb_force(color_1, color_2) {
-   var dr = color_1[0] - color_2[0];
-   var dg = color_1[1] - color_2[1];
-   var db = color_1[2] - color_2[2];
-   var d2 = 1.0 / (dr * dr + dg * dg + db * db);
-   return [dr * d2, dg * d2, db * d2];
- }
-
-// equivale a mix(c2, c1, t) in glsl
-function mix(t, c1, c2) {
-   var u = 1.0 - t;
-   return [
-     t * c1[0] + u * c2[0],
-     t * c1[1] + u * c2[1],
-     t * c1[2] + u * c2[2]
-   ];
- }
-
-// generalizzazione di mix per 3 colori (con 2 parametri)
-function mix3(u, v, c1, c2, c3) {
-   var w = 1.0 - u - v;
-   return [
-     u * c1[0] + v * c2[0] + w * c3[0],
-     u * c1[1] + v * c2[1] + w * c3[1],
-     u * c1[2] + v * c2[2] + w * c3[2]
-   ];
- }
-
-// come sopra, ma per 4 colori
-function mix4(u, v, w, c1, c2, c3, c4) {
-   var t = 1.0 - u - v - w;
-   return [
-     u * c1[0] + v * c2[0] + w * c3[0] + t * c4[0],
-     u * c1[1] + v * c2[1] + w * c3[1] + t * c4[1],
-     u * c1[2] + v * c2[2] + w * c3[2] + t * c4[2]
-   ];
- }
-
-// trova il valore in lst che minimizza la funzione f
-// viene usata nella definizione di due operatori
-function minimize(f, lst) {
-  function m(y, v, l) {
-     if (l) {
-       {
-         var xs = l[1];
-         var x = l[0];
-         var w = f(x);
-         // isNaN serve a emulare il comportamento di caml_lessthan
-         // per caml, x<NaN è sempre vera; per js è sempre falsa.
-         if (v < w || isNaN(w)) return m(y, v, xs);
-         return m(x, w, xs);
-       }
-     }
-     return y;
-   }
-
-  if (lst) {
-    var x = lst[0];
-    return m(x, f(x), lst[1]);
-  }
-  throw new Error("util.minimize: empty list");
-}
-
-
-
-
-
-      ////***   FUNZIONI DA TRASLOCARE   ***////
-      
-      // funzioni che vanno spostate in
-      // qualche altro modulo
-
-
-// opera una qualche trasformazione sulla lista (stile ocaml)
-// di colori p, parametrizzata sul colore c
-// TODO viene usata solo in Gene.random_palette
-function palette_force(c, p) {
- return list.fold_left(
-   function (color, d) {
-      var z = color[2];
-      var y = color[1];
-      var x = color[0];
-      if (d === c) return [x, y, z];   // TODO In caso di problemi, qui c'era un caml_equal
-      var match = rgb_force(c, d);
-      return [x + match[0], y + match[1], z + match[2]];
-    },
-    [0.0, 0.0, 0.0], p);
-}

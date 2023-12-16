@@ -7,11 +7,7 @@ export {
          get_connectors,
          get_sort,
 
-         random_foci,
-         random_scalars,
-         random_palette,
          random_gene,
-
          optimize,
          string_of_gene
 }
@@ -54,39 +50,6 @@ function connectible(f, gene) {
                    gene
                  );
                });
- }
-
-// crea una lista di punti casuali con coordinate in [-1, 1]
-function random_foci(n) {
-   return util.map_range(
-      function (a) {
-        var x = util.rnd_float(-1.0, 1.0);
-        var y = util.rnd_float(-1.0, 1.0);
-        return [x, y];
-      }, 1, n);
- }
-
-// crea una lista di n float casuali in [-1,1]
-function random_scalars(n) {
-    return util.map_range(
-        function (a) { return util.rnd_float(-1.0, 1.0); },
-        1, n);
-};
-
-function random_palette(n) {
-   var p = util.map_range(function (param) { return util.rnd_color(0); }, 1, n);
-   var k = util.rnd_int(-15, 15);
-   var h = 0.1;
-   return util.nest(function (p) {
-        return list.map(function (c) {
-             var match = util.palette_force(c, p);
-             return [
-               c[0] + h * match[0],
-               c[1] + h * match[1],
-               c[2] + h * match[2]
-             ];
-           }, p);
-      }, p, k);
  }
 
 // connect(f, lst):

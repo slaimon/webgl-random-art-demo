@@ -1,6 +1,8 @@
 "blksmth"
 "Be+" size:100
+"Be+ Be+"
 "color Be+"
 "bello cicic"
 "[°]"
 "xiao"
+"xiao" size:20

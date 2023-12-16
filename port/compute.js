@@ -11,7 +11,7 @@ export {
    get_default_size
 }
 
-var default_color = util.color_of_rgb(0.0, 0.0, 0.0);
+var default_color = [0.0, 0.0, 0.0];
 var random_choices = {};
 
 // returns a predetermined value based on the type of operator output:
@@ -71,23 +71,6 @@ function compile(rna, env) {
   return cmpl(rna)[0];
 }
 
-function make_env(seed_string) {
-   util.prng_init(seed_string);
-   var scalars = gene.random_scalars(10);
-   var foci = gene.random_foci(util.rnd_int(5, 20));
-   var palette =
-     [util.color_of_rgb(-1.0, -1.0, -1.0), [
-       util.color_of_rgb(1.0, 0.0, 1.0),
-       gene.random_palette(util.rnd_int(2, 10))
-     ]];
-   
-   return {
-      foci: foci,
-      scalars: scalars,
-      palette: palette
-   };
-}
-
 // sceglie casualmente almeno 1+floor(n/5) degli elementi nella lista fs
 function reduce(fs) {
    var n = list.len(fs);
@@ -102,15 +85,15 @@ function make_gene(size, seed_string) {
    else
       util.rnd_int(120, 200);
    
-   var operators = reduce(operatorList);
-   var seed = [leafNodePT, [leafNodeT, 0]];
+   const operators = reduce(operatorList);
+   const seed = [leafNodePT, [leafNodeT, 0]];
+   const g = gene.optimize(
+                  list.append(
+                     gene.random_gene(operators, seed, ["vec3", 0], size),
+                     seed));
    
-   return { gene: gene.optimize(
-                     list.append(
-                        gene.random_gene(operators, seed, ["vec3", 0], size),
-                        seed)),
-            size: size
-          };
+   return { gene: g,
+            size: size };
 }
 
 function get_default_size(seed_string) {
@@ -130,7 +113,7 @@ function get_gene_listing(size, seed_string) {
 function random_picture(size, seed_string) {
    var [env_seed, gene_seed] = util.split_name(seed_string);
    
-   var env = make_env(env_seed);
+   var env = new Environment(env_seed);
    var g = make_gene(size, gene_seed);
    compile(g.gene, env);
    
@@ -145,4 +128,85 @@ function random_picture(size, seed_string) {
                size: g.size
             }
           };
+}
+
+class Environment {
+   constructor(seed) {
+      util.prng_init(seed);
+      this.scalars = this.#random_scalars(10);
+      this.foci = this.#random_foci(util.rnd_int(5, 20));
+      this.palette =
+            [ [-1.0, -1.0, -1.0], 
+            [ [1.0, 0.0, 1.0],
+               this.#random_palette(util.rnd_int(2, 10))
+            ]];
+   }
+
+   // restituisce un array fatto più o meno così:
+   // [f(a), [f(a+1), [f(a+2), ... [f(b-1), [f(b), 0]] ... ]]]
+   // in altre parole: una lista stile ocaml che corrisponde a
+   // [f(a), f(a+1), f(a+2), ... f(b-1), f(b)]
+   #map_range(f, a, b) {
+      if (a > b) return 0;
+      var x = f(a);
+      var xs = this.#map_range(f, a + 1, b);
+      return [x, xs];
+   }
+ 
+   // crea una lista di punti casuali con coordinate in [-1, 1]
+   #random_foci(n) {
+      return this.#map_range(
+         function (a) {
+            var x = util.rnd_float(-1.0, 1.0);
+            var y = util.rnd_float(-1.0, 1.0);
+            return [x, y];
+         }, 1, n);
+   }
+
+   // crea una lista di n float casuali in [-1,1]
+   #random_scalars(n) {
+      return this.#map_range(
+            function (a) { return util.rnd_float(-1.0, 1.0); },
+            1, n);
+   };
+
+   #random_palette(n) {
+      // interessante funzione che da due colori diversi ne fa uno nuovo
+      function rgb_force(color_1, color_2) {
+      var dr = color_1[0] - color_2[0];
+      var dg = color_1[1] - color_2[1];
+      var db = color_1[2] - color_2[2];
+      var d2 = 1.0 / (dr * dr + dg * dg + db * db);
+      return [dr * d2, dg * d2, db * d2];
+      }
+
+      // opera una qualche trasformazione sulla lista (stile ocaml)
+      // di colori p, parametrizzata sul colore c
+      function palette_force(c, p) {
+      return list.fold_left(
+         function (color, d) {
+            var z = color[2];
+            var y = color[1];
+            var x = color[0];
+            if (d === c) return [x, y, z];
+            var match = rgb_force(c, d);
+            return [x + match[0], y + match[1], z + match[2]];
+         },
+         [0.0, 0.0, 0.0], p);
+      }
+
+      var p = this.#map_range(function (param) { return util.rnd_color(); }, 1, n);
+      var k = util.rnd_int(-15, 15);
+      var h = 0.1;
+      return util.nest(function (p) {
+            return list.map(function (c) {
+               var match = palette_force(c, p);
+               return [
+                  c[0] + h * match[0],
+                  c[1] + h * match[1],
+                  c[2] + h * match[2]
+               ];
+               }, p);
+         }, p, k);
+   }
 }

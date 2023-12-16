@@ -11,7 +11,7 @@
         <div id="sidebar" class="sidebar">
             <div class="panelControlArea" style="display: flex; align-items: center; margin: 10px;">
                 <button id="sidebarToggle" name="">
-                    <img class="icon" src="./resources/hamburger.svg"></img>
+                    <img class="icon" src="./res/hamburger.svg"></img>
                 </button>
             </div>
             <div id="sidebarContent">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-        <div class="mainpage" name="page content">
+        <div class="mainpage" name="page content" id="pageContent">
             <div name="old renderer" class="panel" style="background-color:lightcoral;">
                 <div class="panelControlArea">
                     <input type="checkbox" id="oldRendererToggle" checked autocomplete="off">
@@ -127,14 +127,17 @@
 
     sidebarContent = document.getElementById("sidebarContent");
     sidebar = document.getElementById("sidebar");
+    pageContent = document.getElementById("pageContent");
     function hideSidebar() {
         sidebarContent.style.display = "none";
         sidebar.style.width = "fit-content";
+        pageContent.style.marginLeft = "77.5px"
     }
     function showSidebar() {
         sidebarContent.style.display = "flex";
         sidebarContent.style.flexDirection = "column";
         sidebar.style.width = "305px";
+        pageContent.style.marginLeft = "305px";
     }
     function toggleSidebar() {
         if(sidebarContent.style.display === "none") {
