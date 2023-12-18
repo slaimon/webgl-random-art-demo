@@ -164,6 +164,7 @@ async function savePictureAux() {
     await webglRenderFrag(glslSource, canvas);
 
     download(`${getFilename()}.png`, canvas.toDataURL("image/png"));
+    canvas.remove();
     exportMessage.innerHTML = "Done!"
 }
 

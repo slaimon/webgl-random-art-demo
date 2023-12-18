@@ -14,6 +14,6 @@ If you experience problems of any kind, or you have suggestions to improve the U
 
 * refactor `main.js`
 * refactor `old/gene.js` and `old/compute.js` while trying not to break compatibility
+* check for memory leaks and other performance issues (the page seems to slow down immensely after a few images are exported)
 * if the old canvas is still busy while the form is submitted, the worker should drop the old job and take on the new one
-* avoid stretching out the exported image when the aspect ratio is not 1:1
 * turn the checkbox into a toggleswitch using css black magic

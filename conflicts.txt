@@ -6,3 +6,4 @@
 "[°]"
 "xiao"
 "xiao" size:20
+"krak"

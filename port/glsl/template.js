@@ -7,7 +7,6 @@ ${about}
 precision highp float;
 #endif
 uniform vec2 u_resolution;
-#define RESOLUTION u_resolution
 
 #define PI     3.14159265359
 #define SQRT2  1.41421356237
@@ -33,7 +32,10 @@ ${library}
 
 void main() {
      initialise();
-     vec2 pt = ZOOM * (gl_FragCoord.xy/RESOLUTION.xy - CENTER);  
+     vec2 pt = ZOOM * (gl_FragCoord.xy/u_resolution.xy - CENTER);
+     pt *= (u_resolution.x >= u_resolution.y) ? 
+          vec2(u_resolution.x/u_resolution.y, 1.0) :
+          vec2(1.0, u_resolution.y/u_resolution.x);
      pt.y = -pt.y;
       
      // GENE ASSEMBLY
