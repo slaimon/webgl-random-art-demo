@@ -1,24 +1,28 @@
-export {submitJob, toggleOldRenderer, copyGlslSource, saveGlslSource, savePicture}
+export {submitJob, toggleOldRenderer, oneClickGen, copyGlslSource, saveGlslSource, savePicture}
 
 import {new_picture, compute_pixel} from "./old/gen.js"
 import {webglRenderFrag} from "./webgl.js"
 import * as compute from "./port/compute.js"
 import * as glsl from "./port/glsl/glsl.js"
 
-function getJobParameters() {
-    const seed = document.getElementById("seed").value;
-    var size = parseInt(document.getElementById("dnaSize").value);
-    if(!size) size = compute.get_default_size(seed);
-
-    return [size, seed];
-}
-
 const oldCanvasPerformance = document.getElementById("oldCanvasPerformance");
 const webglCanvasPerformance = document.getElementById("webglCanvasPerformance");
+
+const filenameElement = document.getElementById("filename");
+const seedElement = document.getElementById("seed");
+const sizeElement = document.getElementById("dnaSize");
 
 const canvas = document.getElementById("oldCanvas");
 const resolution = parseInt(canvas.getAttribute("width"));
 const ctx = canvas.getContext("2d");
+
+function getJobParameters() {
+    const seed = seedElement.value;
+    var size = parseInt(sizeElement.value);
+    if(!size) size = compute.get_default_size(seed);
+
+    return [size, seed];
+}
 
 var useOldRenderer = true;
 var lastSubmittedJob = undefined;
@@ -88,7 +92,7 @@ async function paintNewPicture(size, seed) {
 
     const picture = compute.random_picture(size, seed);
     document.getElementById("genomeListingBox").innerHTML = picture.gene_listing;
-    document.getElementById("dnaSize").placeholder = picture.params.size;
+    sizeElement.placeholder = picture.params.size;
     const shader = glsl.create_shader(picture);
 
     var canvas = document.getElementById("webglCanvas");
@@ -105,8 +109,38 @@ async function submitJob() {
     const [size, seed] = getJobParameters();
     lastSubmittedJob = [size, seed];
 
-    document.getElementById("filename").placeholder = makeFilename(size, seed);
+    filenameElement.value = "";
+    filenameElement.placeholder = makeFilename(size, seed);
+    seedElement.placeholder = "";
 
+    paintOldPicture(size, seed);
+    glslSource = await paintNewPicture(size, seed);
+}
+
+function rndInt(a,b) {
+    return Math.round(a + (b-a)*Math.random());
+}
+function makeSeed(length) {
+    let result = '';
+    const characters = 'abcdefghijklmnopqrstuvwxyz -';
+    const maxIndex = characters.length - 1;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(rndInt(0,maxIndex));
+      counter += 1;
+    }
+    return result;
+}
+async function oneClickGen() {
+    const seed = makeSeed(rndInt(3,10));
+    const size = compute.get_default_size(seed);
+    lastSubmittedJob = [size, seed];
+
+    filenameElement.value = "";
+    filenameElement.placeholder = makeFilename(size, seed);
+    seedElement.value = "";
+    seedElement.placeholder = seed;
+    
     paintOldPicture(size, seed);
     glslSource = await paintNewPicture(size, seed);
 }
@@ -128,11 +162,11 @@ function makeFilename(size, seed) {
 }
 
 function getFilename() {
-    var name = document.getElementById("filename").value;
+    var name = filenameElement.value;
     if(name)
         return name;
     else
-        return document.getElementById("filename").placeholder;
+        return filenameElement.placeholder;
 }
 
 function saveGlslSource() {

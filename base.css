@@ -10,7 +10,7 @@
 
 h2 {
     font-size: medium;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
     margin-top: 0.5em;
 }
 button,
@@ -36,14 +36,22 @@ textarea[readonly=true] {
 }
 label {
     float: left;
-    width: 4.5em;
     margin-right: 1em;
     margin: 0.25em 1em 0.25em 0;
     font-size: small;
     font-family: sans-serif;
 }
-#exportPanel label {
-    width: 6em;
+.centeredPanel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 0.5em;
+}
+.centeredPanel label {
+    width: auto;
+    margin: 0;
+    margin-bottom: 0.25em;
 }
 fieldset {
     border: none;
@@ -70,8 +78,27 @@ fieldset {
     border-radius: 5px;
     padding: 10px;
     margin: 10px;
-    
 }
+.sidebar .panel p {
+    font-size: small;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.bigButtonContainer {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    padding: .5em;
+    border: solid 1px green;
+    border-radius: 5px;
+}
+#oneClickButton {
+    font-size: small;
+    color: black;
+    border: 1px solid;
+}
+
 .sidebar .icon {
     width: 20px;
     display: flex;
@@ -132,4 +159,11 @@ fieldset {
 }
 #genomePanel .panelContent {
     text-align: center;
+}
+
+.wideField {
+    width: 9em;
+}
+.tightField {
+    width: 3em;
 }

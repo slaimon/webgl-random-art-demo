@@ -21,16 +21,25 @@
                     </div>
                     <h2>Controls</h2>
                     <div class="panelContent">
+                        <p>
+                            Generate a picture with one click:
+                        </p>
+                        <div class="bigButtonContainer" >
+                            <input type="button" id="oneClickButton" value="One Click!">
+                        </div>
+                        <p>
+                            Or manually set the parameters:
+                        </p>
                         <form onsubmit="return false;">
                             <label for="seedInput">Seed:</label>
                             <div id="seedInput">
-                                <input id="seed" type="text" class="labeledElement" autocomplete="off">
+                                <input id="seed" type="text" class="labeledElement wideField" autocomplete="off">
                                 <input id="paintButton" type="submit" value="Paint">
                             </div>
                             <div id="advancedControls" style="display: none;">
                                 <hr>
                                 <label for="dnaSize">DNA size:</label>
-                                <input id="dnaSize" type="text" class="labeledElement" size="3" maxlength="3" autocomplete="off">
+                                <input id="dnaSize" type="text" class="labeledElement tightField" size="3" maxlength="3" autocomplete="off">
                             </div>
                         </form>
                     </div>
@@ -50,29 +59,28 @@
                     <div class="panelControlArea">
                         <p id="exportMessage">&nbsp</p>
                     </div>
-                    <h2>Export
-                        <div name="Filename Area">
-                            <label for="filename" style="font-weight: normal; width: 5em;">File name:</label>
-                            <input type="text" id="filename" class="labeledElement" autocomplete="off">
-                        </div>
-                    </h2>
+                    <h2>Export</h2>
                     <div class="panelContent">
-                        <div name="Source Area">
-                            <label for="sourceButtons">Source code:</label>
-                            <span id="sourceButtons" class="labeledElement">
-                                <input id="copySourceButton" type="button" value="copy">
-                                <input id="downloadSourceButton" type="button" value="download">
-                            </span>
+                        <div name="Filename Area">
+                            <label for="filename">File name:</label>
+                            <input type="text" id="filename" class="labeledElement wideField" autocomplete="off">
                         </div>
                         <hr>
-                        <div name="Picture Area">
+                        <div name="Source Area" class="centeredPanel">
+                            <label for="sourceButtons">Source code:</label>
+                            <span id="sourceButtons" class="labeledElement">
+                                <input type="button" id="copySourceButton" value="copy">
+                                <input type="button" id="downloadSourceButton" value="download">
+                            </span>
+                        </div>
+                        <div name="Picture Area" class="centeredPanel">
                             <label for="resolutionInput">Resolution:</label>
                             <fieldset id="resolutionInput" class="labeledElement">                  
-                                <input type="text" id="imageWidth" placeholder="1024" size="4" maxlength="4">
+                                <input type="text" id="imageWidth" placeholder="1024" size="4" class="tightField">
                                 <span class="separator">&nbsp x &nbsp</span>
-                                <input type="text" id="imageHeight" placeholder="1024" size="4" maxlength="4">
+                                <input type="text" id="imageHeight" placeholder="1024" size="4" class="tightField">
                             </fieldset>
-                            <input id="saveImageButton" type="button" value="Save this picture">
+                            <input type="button" id="saveImageButton" value="Save this picture">
                         </div>
                     </div>
                 </div>
@@ -98,7 +106,9 @@
 <script type="module">
     import {submitJob, toggleOldRenderer,
             copyGlslSource, saveGlslSource,
-            savePicture} from "./main.js"
+            oneClickGen, savePicture} from "./main.js"
+
+    document.getElementById("oneClickButton").addEventListener("click", oneClickGen);
 
     document.addEventListener("submit", submitJob);
     document.getElementById("oldRendererToggle").addEventListener("click", toggleOldRenderer);
