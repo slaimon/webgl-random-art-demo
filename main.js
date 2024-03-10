@@ -92,7 +92,7 @@ async function paintNewPicture(size, seed) {
 
     const picture = compute.random_picture(size, seed);
     document.getElementById("genomeListingBox").innerHTML = picture.gene_listing;
-    sizeElement.placeholder = picture.params.size;
+    sizeElement.value = picture.params.size;
     const shader = glsl.create_shader(picture);
 
     var canvas = document.getElementById("webglCanvas");
@@ -136,10 +136,8 @@ async function oneClickGen() {
     const size = compute.get_default_size(seed);
     lastSubmittedJob = [size, seed];
 
-    filenameElement.value = "";
-    filenameElement.placeholder = makeFilename(size, seed);
-    seedElement.value = "";
-    seedElement.placeholder = seed;
+    filenameElement.value = makeFilename(size, seed);
+    seedElement.value = seed;
     
     paintOldPicture(size, seed);
     glslSource = await paintNewPicture(size, seed);
