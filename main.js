@@ -16,16 +16,24 @@ const canvas = document.getElementById("oldCanvas");
 const resolution = parseInt(canvas.getAttribute("width"));
 const ctx = canvas.getContext("2d");
 
+var lastSubmittedJob = undefined;
 function getJobParameters() {
     const seed = seedElement.value;
-    var size = parseInt(sizeElement.value);
-    if(!size) size = compute.get_default_size(seed);
+    var size;
+    // only compute the default DNA size if:
+    // - we are generating the first image
+    // - the user entered a new seed
+    if(lastSubmittedJob !== undefined && seed !== lastSubmittedJob.seed ||
+       lastSubmittedJob === undefined)
+        size = compute.get_default_size(seed);
+    else {
+        size = parseInt(sizeElement.value);
+    }
 
     return [size, seed];
 }
 
 var useOldRenderer = true;
-var lastSubmittedJob = undefined;
 function toggleOldRenderer() {
     var toggle =  document.getElementById("oldRendererToggle");
     useOldRenderer = !useOldRenderer;
@@ -36,8 +44,7 @@ function toggleOldRenderer() {
         return;
     }
     if(useOldRenderer && lastSubmittedJob !== undefined) {
-        const [size, seed] = lastSubmittedJob;
-        paintOldPicture(size, seed);
+        paintOldPicture(lastSubmittedJob.size, lastSubmittedJob.seed);
     }
 }
 
@@ -104,14 +111,19 @@ async function paintNewPicture(size, seed) {
     return shader;
 }
 
+function clearMessages() {
+    exportMessage.innerHTML = "";
+}
+
 var glslSource;
 async function submitJob() {
     const [size, seed] = getJobParameters();
-    lastSubmittedJob = [size, seed];
+    lastSubmittedJob = {size:size, seed:seed};
 
     filenameElement.value = "";
     filenameElement.placeholder = makeFilename(size, seed);
     seedElement.placeholder = "";
+    clearMessages();
 
     paintOldPicture(size, seed);
     glslSource = await paintNewPicture(size, seed);
@@ -134,10 +146,11 @@ function makeSeed(length) {
 async function oneClickGen() {
     const seed = makeSeed(rndInt(3,10));
     const size = compute.get_default_size(seed);
-    lastSubmittedJob = [size, seed];
+    lastSubmittedJob = {size:size, seed:seed};
 
     filenameElement.value = makeFilename(size, seed);
     seedElement.value = seed;
+    clearMessages();
     
     paintOldPicture(size, seed);
     glslSource = await paintNewPicture(size, seed);

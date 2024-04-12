@@ -10,7 +10,7 @@
     <div class="header">
         <div id="sidebar" class="sidebar">
             <div class="panelControlArea" style="display: flex; align-items: center; margin: 10px;">
-                <button id="sidebarToggle" name="">
+                <button id="sidebarToggle" title="Toggle the sidebar">
                     <img class="icon" src="./res/hamburger.svg"></img>
                 </button>
             </div>
@@ -31,9 +31,9 @@
                             Or manually set the parameters:
                         </p>
                         <form onsubmit="return false;">
-                            <label for="seedInput">Seed:</label>
                             <div id="seedInput">
-                                <input id="seed" type="text" class="labeledElement wideField" autocomplete="off">
+                                <label for="seed">Seed:</label>
+                                <input id="seed" type="text" class="labeledElement wideField" autocomplete="off" placeholder="Insert any text...">
                                 <input id="paintButton" type="submit" value="Paint">
                             </div>
                             <div id="advancedControls" style="display: none;">
@@ -51,7 +51,7 @@
                     <h2>Genome Viewer</h2>
                     <div class="panelContent">
                         <div>
-                            <textarea id="genomeListingBox" readonly="true" cols=30 rows=10 value="" autocomplete="off" style="display: none;"></textarea>
+                            <textarea id="genomeListingBox" readonly="true" cols=30 rows=10 value="" autocomplete="off" style="display: none;" placeholder="Generate a new image to view its genome."></textarea>
                         </div>
                     </div>
                 </div>
@@ -67,14 +67,14 @@
                         </div>
                         <hr>
                         <div name="Source Area" class="centeredPanel">
-                            <label for="sourceButtons">Source code:</label>
+                            <label>Source code:</label>
                             <span id="sourceButtons" class="labeledElement">
                                 <input type="button" id="copySourceButton" value="copy">
                                 <input type="button" id="downloadSourceButton" value="download">
                             </span>
                         </div>
                         <div name="Picture Area" class="centeredPanel">
-                            <label for="resolutionInput">Resolution:</label>
+                            <label>Resolution:</label>
                             <fieldset id="resolutionInput" class="labeledElement">                  
                                 <input type="text" id="imageWidth" placeholder="1024" size="4" class="tightField">
                                 <span class="separator">&nbsp x &nbsp</span>
@@ -89,7 +89,7 @@
         <div class="mainpage" name="page content" id="pageContent">
             <div name="old renderer" class="panel" style="background-color:lightcoral;">
                 <div class="panelControlArea">
-                    <input type="checkbox" id="oldRendererToggle" checked autocomplete="off">
+                    <input type="checkbox" id="oldRendererToggle" checked autocomplete="off" title="Turn off the old renderer">
                 </div>
                 <h2>Old Renderer</h2>
                 <canvas id="oldCanvas" width="400" height="400"></canvas>
@@ -135,9 +135,9 @@
         document.getElementById(toggleId).addEventListener("click", displayToggle(toggleId, elementId));
     }
 
-    sidebarContent = document.getElementById("sidebarContent");
-    sidebar = document.getElementById("sidebar");
-    pageContent = document.getElementById("pageContent");
+    let sidebarContent = document.getElementById("sidebarContent");
+    let sidebar = document.getElementById("sidebar");
+    let pageContent = document.getElementById("pageContent");
     function hideSidebar() {
         sidebarContent.style.display = "none";
         sidebar.style.width = "fit-content";
