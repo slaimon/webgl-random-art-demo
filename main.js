@@ -21,10 +21,10 @@ function getJobParameters() {
     const seed = seedElement.value;
     var size;
     // only compute the default DNA size if:
-    // - we are generating the first image
+    // - the "seed" input field is empty
     // - the user entered a new seed
     if(lastSubmittedJob !== undefined && seed !== lastSubmittedJob.seed ||
-       lastSubmittedJob === undefined)
+       sizeElement.value === "")
         size = compute.get_default_size(seed);
     else {
         size = parseInt(sizeElement.value);
