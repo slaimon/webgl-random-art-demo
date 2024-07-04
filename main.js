@@ -136,10 +136,8 @@ function makeSeed(length) {
     let result = '';
     const characters = 'abcdefghijklmnopqrstuvwxyz -';
     const maxIndex = characters.length - 1;
-    let counter = 0;
-    while (counter < length) {
+    for (let i=0; i<length; i++) {
       result += characters.charAt(rndInt(0,maxIndex));
-      counter += 1;
     }
     return result;
 }
@@ -168,7 +166,7 @@ function copyGlslSource() {
 }
 
 function makeFilename(size, seed) {
-    var filename = seed + " - " + size;
+    var filename = `${seed} (${size})`;
     return filename.replaceAll(/\*|\/|\\|\||\+|:|<|>|\?|,|\.|;|=|\[|\]/g, "_");
 }
 
@@ -208,7 +206,10 @@ async function savePictureAux() {
     var canvas = createCanvas(width, height);
     await webglRenderFrag(glslSource, canvas);
 
-    download(`${getFilename()}.png`, canvas.toDataURL("image/png"));
+    canvas.toBlob((blob)=>{
+        const url = URL.createObjectURL(blob);
+        download(`${getFilename()}.png`, url);
+    });
     canvas.remove();
     exportMessage.innerHTML = "Done!"
 }
