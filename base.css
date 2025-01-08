@@ -143,6 +143,10 @@ fieldset {
     grid-template-rows: auto;
     gap: 10px;
     border: none;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .mainpage .panel {
     border: 1px solid black;
