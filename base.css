@@ -59,15 +59,12 @@ fieldset {
 }
 
 .sidebar {
-    width: 305px;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow-y: scroll;
+    width: fit-content;
+    min-width: 300px;
     padding: 15px 10px;
     background-color: lightgreen;
-    border-right: 1px solid green;
+    border: 1px solid green;
+    border-radius: 5px;
 
     display: flex;
     flex-direction: column;
@@ -125,21 +122,38 @@ fieldset {
     margin: 0;
 }
 
-.mainpage {
-    left: 0;
-    top: 0;
-    margin-left: 305px;
-    overflow-y: scroll;
-    padding: 10px;
-    
-    display: grid;
+@media (min-width:1136px) {
+    .wrapper {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+@media (max-width:1136px) {
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+.infoheader {
+    margin: 5px 5px 0px 5px;
     text-align: center;
+}
+
+.mainpage {
+    padding: 10px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
     gap: 10px;
     border: none;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.mainpage .panel {
+.panel {
     border: 1px solid black;
     border-radius: 10px;
     padding: 10px;
@@ -153,6 +167,11 @@ fieldset {
     margin: 16px 0;
 }
 
+.renderer {
+    text-align: center;
+    width: fit-content;
+    min-width: 450px;
+}
 #oldRendererToggle {
     width: 1.5em;
     height: 1.5em;

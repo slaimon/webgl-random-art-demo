@@ -7,13 +7,11 @@
     <title>( demo )</title>
 </head>
 <body id="document">
-    <div class="header">
+    <div class="infoheader panel">
+        Wondering what this page is? Visit the <a href="https://github.com/slaimon/webgl-random-art-demo">repository</a> for more info!
+    </div>
+    <div class="wrapper mainpage">
         <div id="sidebar" class="sidebar">
-            <div class="panelControlArea" style="display: flex; align-items: center; margin: 10px;">
-                <button id="sidebarToggle" title="Toggle the sidebar">
-                    <img class="icon" src="./res/hamburger.svg"></img>
-                </button>
-            </div>
             <div id="sidebarContent">
                 <div class="panel" name="Control Panel">
                     <div class="panelControlArea">
@@ -86,8 +84,7 @@
                 </div>
             </div>
         </div>
-        <div class="mainpage" name="page content" id="pageContent">
-            <div name="old renderer" class="panel" style="background-color:lightcoral;">
+            <div name="old renderer" class="panel renderer" style="background-color:lightcoral;">
                 <div class="panelControlArea">
                     <input type="checkbox" id="oldRendererToggle" checked autocomplete="off" title="Turn off the old renderer">
                 </div>
@@ -95,12 +92,11 @@
                 <canvas id="oldCanvas" width="400" height="400"></canvas>
                 <p id="oldCanvasPerformance" class="canvasCaption">&nbsp</p>
             </div>
-            <div name="new renderer" class="panel" style="background-color: lightskyblue;">
+            <div name="new renderer" class="panel renderer" style="background-color: lightskyblue;">
                 <h2>WebGL Renderer</h2>
                 <canvas id="webglCanvas" width="400" height="400"></canvas>
                 <p id="webglCanvasPerformance" class="canvasCaption">&nbsp</p>
             </div>
-        </div>
     </div>
 </body>
 <script type="module">
@@ -134,30 +130,6 @@
     function createToggle(toggleId, elementId) {
         document.getElementById(toggleId).addEventListener("click", displayToggle(toggleId, elementId));
     }
-
-    let sidebarContent = document.getElementById("sidebarContent");
-    let sidebar = document.getElementById("sidebar");
-    let pageContent = document.getElementById("pageContent");
-    function hideSidebar() {
-        sidebarContent.style.display = "none";
-        sidebar.style.width = "fit-content";
-        pageContent.style.marginLeft = "77.5px"
-    }
-    function showSidebar() {
-        sidebarContent.style.display = "flex";
-        sidebarContent.style.flexDirection = "column";
-        sidebar.style.width = "305px";
-        pageContent.style.marginLeft = "305px";
-    }
-    function toggleSidebar() {
-        if(sidebarContent.style.display === "none") {
-            showSidebar();
-        }
-        else {
-            hideSidebar();
-        }
-    }
-    document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar);
 
     createToggle("genomeToggle", "genomeListingBox");
     createToggle("advancedToggle", "advancedControls");
