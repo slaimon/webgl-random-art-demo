@@ -123,19 +123,24 @@ fieldset {
 }
 
 @media (min-width:1136px) {
-    .header {
+    .wrapper {
         display: flex;
         flex-direction: row;
     }
 }
 
 @media (max-width:1136px) {
-    .header {
+    .wrapper {
         display: flex;
         flex-direction: column;
     }
 }
 
+
+.infoheader {
+    margin: 5px 5px 0px 5px;
+    text-align: center;
+}
 
 .mainpage {
     padding: 10px;
@@ -148,7 +153,7 @@ fieldset {
     align-items: center;
     justify-content: center;
 }
-.mainpage .panel {
+.panel {
     border: 1px solid black;
     border-radius: 10px;
     padding: 10px;
