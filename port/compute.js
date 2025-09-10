@@ -16,21 +16,20 @@ var random_choices = {};
 
 // returns a predetermined value based on the type of operator output:
 function defaultValue(type) {
-  switch (type)
-  {
-  case "bool":  return [false];
-  case "float": return [0.7];
-  case "vec2":  return [0.2, 0.3];
-  case "vec3":  return [default_color];
-  default: return null;
-  }
+   switch (type) {
+      case "bool":  return [false];
+      case "float": return [0.7];
+      case "vec2":  return [0.2, 0.3];
+      case "vec3":  return [default_color];
+      default: return null;
+   }
 }
 
 function make_cell(cells, f, env) {
    var choices;
    if (f.choices) {
       try {
-      choices = f.choices(env, cells);
+         choices = f.choices(env, cells);
       } catch(e) {
          throw new Error(`compute.make_cell: operator ${f.name} encountered an error while choosing its random parameters`, {cause:e});
       }
@@ -45,28 +44,25 @@ function make_cell(cells, f, env) {
    }
    else choices = null;
 
-   return [
-            [defaultValue(f.retval)],
-            choices
-          ];
+   return [ [defaultValue(f.retval)], choices ];
 }
 
 function compile(rna, env) {
   function cmpl(g) {
-       if (g) {
+      if (g) {
          var link = g[0];          // link = [op, connectors]
          var match = cmpl(g[1]);   // match = compile(g[1], env)
          var asc = match[1];
          var cell =
-           make_cell(
-             list.map( (r) => list.assq(r, asc),
+            make_cell(
+               list.map( (r) => list.assq(r, asc),
                         gene.get_connectors(link) ),  // cells
-             gene.get_op(link),  // f
-             env);               // env
+               gene.get_op(link),  // f
+               env);               // env
          return [[cell, match[0]], [[link, cell], asc]];
-       }
-       return [0, 0];
-     }
+      }
+      return [0, 0];
+   }
 
   return cmpl(rna)[0];
 }
@@ -121,13 +117,14 @@ function random_picture(size, seed_string) {
    const choices = random_choices;
    random_choices = {};
    
-   return { gene_listing: gene.string_of_gene(g.gene),
-            choices: choices,
-            params: {
-               seed: seed_string,
-               size: g.size
-            }
-          };
+   return { 
+      gene_listing: gene.string_of_gene(g.gene),
+      choices: choices,
+      params: {
+         seed: seed_string,
+         size: g.size
+      }
+   };
 }
 
 class Environment {
@@ -135,11 +132,13 @@ class Environment {
       util.prng_init(seed);
       this.scalars = this.#random_scalars(10);
       this.foci = this.#random_foci(util.rnd_int(5, 20));
-      this.palette =
-            [ [-1.0, -1.0, -1.0], 
-            [ [1.0, 0.0, 1.0],
-               this.#random_palette(util.rnd_int(2, 10))
-            ]];
+      this.palette = [ 
+         [-1.0, -1.0, -1.0],
+         [
+            [1.0, 0.0, 1.0],
+            this.#random_palette(util.rnd_int(2, 10))
+         ]
+      ];
    }
 
    // restituisce un array fatto più o meno così:
@@ -147,16 +146,15 @@ class Environment {
    // in altre parole: una lista stile ocaml che corrisponde a
    // [f(a), f(a+1), f(a+2), ... f(b-1), f(b)]
    #map_range(f, a, b) {
-      if (a > b) return 0;
-      var x = f(a);
-      var xs = this.#map_range(f, a + 1, b);
-      return [x, xs];
+      if (a > b)
+         return 0;
+      return [f(a), this.#map_range(f, a + 1, b)];
    }
  
    // crea una lista di punti casuali con coordinate in [-1, 1]
    #random_foci(n) {
       return this.#map_range(
-         function (a) {
+         function (unit) {
             var x = util.rnd_float(-1.0, 1.0);
             var y = util.rnd_float(-1.0, 1.0);
             return [x, y];
@@ -165,47 +163,44 @@ class Environment {
 
    // crea una lista di n float casuali in [-1,1]
    #random_scalars(n) {
-      return this.#map_range(
-            function (a) { return util.rnd_float(-1.0, 1.0); },
-            1, n);
+      return this.#map_range(function (unit) { return util.rnd_float(-1.0, 1.0); }, 1, n);
    };
 
    #random_palette(n) {
       // interessante funzione che da due colori diversi ne fa uno nuovo
       function rgb_force(color_1, color_2) {
-      var dr = color_1[0] - color_2[0];
-      var dg = color_1[1] - color_2[1];
-      var db = color_1[2] - color_2[2];
-      var d2 = 1.0 / (dr * dr + dg * dg + db * db);
-      return [dr * d2, dg * d2, db * d2];
+         var dr = color_1[0] - color_2[0];
+         var dg = color_1[1] - color_2[1];
+         var db = color_1[2] - color_2[2];
+         var d2 = 1.0 / (dr * dr + dg * dg + db * db);
+         return [dr * d2, dg * d2, db * d2];
       }
 
       // opera una qualche trasformazione sulla lista (stile ocaml)
       // di colori p, parametrizzata sul colore c
       function palette_force(c, p) {
-      return list.fold_left(
-         function (color, d) {
-            var z = color[2];
-            var y = color[1];
-            var x = color[0];
-            if (d === c) return [x, y, z];
-            var match = rgb_force(c, d);
-            return [x + match[0], y + match[1], z + match[2]];
-         },
-         [0.0, 0.0, 0.0], p);
+         return list.fold_left(
+            function (color, d) {
+               var z = color[2];
+               var y = color[1];
+               var x = color[0];
+               if (d === c)
+                  return [x, y, z];
+               var match = rgb_force(c, d);
+               return [x + match[0], y + match[1], z + match[2]];
+            },
+            [0.0, 0.0, 0.0], p);
       }
 
-      var p = this.#map_range(function (param) { return util.rnd_color(); }, 1, n);
+      var p = this.#map_range(function (unit) { return util.rnd_color(); }, 1, n);
       var k = util.rnd_int(-15, 15);
       var h = 0.1;
       return util.nest(function (p) {
             return list.map(function (c) {
                var match = palette_force(c, p);
-               return [
-                  c[0] + h * match[0],
-                  c[1] + h * match[1],
-                  c[2] + h * match[2]
-               ];
+               return [ c[0] + h * match[0],
+                        c[1] + h * match[1],
+                        c[2] + h * match[2] ];
                }, p);
          }, p, k);
    }

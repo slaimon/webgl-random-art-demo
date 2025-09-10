@@ -3,17 +3,18 @@ import * as list from "./list.js"
 import { operatorList } from "./operator-objects.js"
 
 export {
-         get_op,
-         get_connectors,
-         get_sort,
+   get_op,
+   get_connectors,
+   get_sort,
 
-         random_gene,
-         optimize,
-         string_of_gene
+   random_gene,
+   optimize,
+   string_of_gene
 }
 
 function array_to_list(a) {
-   if(a.length === 0) return 0;
+   if(a.length === 0)
+      return 0;
    
    return [a[0], array_to_list(a.slice(1))];
 }
@@ -26,8 +27,8 @@ function get_connectors(l) { return l[1]; }
 // restituisce una lista di tutti gli operatori che hanno campo retval === type
 function get_sort(type, array_of_ops) {
    var result = array_of_ops.filter(
-     (f) => f[0].retval === type,
-     array_of_ops
+      (f) => f[0].retval === type,
+      array_of_ops
    );
    
    if(!result) {
@@ -62,66 +63,68 @@ function connect(f, lst) {
    connectors = array_to_list(connectors);
    
    return [f, connectors];
- }
+}
 
 function random_gene(ops, seed, res, k) {
-    function make(j, lst, lst1) {
+   function make(j, lst, lst1) {
       if (j <= 1) {
-          var ops1 =
+         var ops1 =
             list.find_all(function (f) { return connectible(f, lst1); }, ops);
-          var fs =
+         var fs =
             list.find_all(
-              function (f) { return list.mem(f.retval, res); },
-              ops1
+               function (f) { return list.mem(f.retval, res); },
+               ops1
             );
-          if (fs) return [connect(util.pick(fs), lst1), lst];
-          if (j < -k - 5)
+         if (fs) return [connect(util.pick(fs), lst1), lst];
+         if (j < -k - 5)
             return list.append(random_gene(operatorList, lst1, res, j), lst);
-          let new_link = connect(util.pick(ops1), lst1);
-          return make(j - 1, [new_link, lst], [new_link, lst1]);
+         let new_link = connect(util.pick(ops1), lst1);
+         return make(j - 1, [new_link, lst], [new_link, lst1]);
       }
       var f = util.pick(ops);
       if (connectible(f, lst1)) {
-          let new_link = connect(f, lst1);
-          return make(j - 1, [new_link, lst], [new_link, lst1]);
+         let new_link = connect(f, lst1);
+         return make(j - 1, [new_link, lst], [new_link, lst1]);
       }
-      var match =
-        list.fold_right(function (p1, p2) {
-             let arg_f = p1[0];
-             let choice = p1[1];
-             var g = random_gene(ops, lst1, [arg_f, 0], choice);
-             if (g)
+      var match = list.fold_right(
+         function (p1, p2) {
+            let arg_f = p1[0];
+            let choice = p1[1];
+            var g = random_gene(ops, lst1, [arg_f, 0], choice);
+            if (g)
                return [
-                 p2[0] - list.len(g),
-                 [g[0], p2[1]],
-                 list.append(g, p2[2]),
-                 list.append(g, p2[3])
+                  p2[0] - list.len(g),
+                  [g[0], p2[1]],
+                  list.append(g, p2[2]),
+                  list.append(g, p2[3])
                ];
-             throw new Error("[Match_failure, [\"gene.ml\", 101, 7]]");
-           }, list.combine(
-          array_to_list(f.argv), // shallow copy in caso desse problemi TODO
-          util.rnd_partition(util.rnd_int(1, j - 1), f.argv.length)
-        ), [j, 0, lst, lst1]);
+            throw new Error("[Match_failure, [\"gene.ml\", 101, 7]]");
+         },
+         list.combine(
+            array_to_list(f.argv), // shallow copy in caso desse problemi TODO
+            util.rnd_partition(util.rnd_int(1, j - 1), f.argv.length)
+         ),
+         [j, 0, lst, lst1]
+      );
       var c = [f, match[1]];
       return make(match[0], [c, match[2]], [c, match[3]]);
-    }
+   }
 
- return make(k, 0, seed);
+   return make(k, 0, seed);
 }
 
 function optimize(g) {
-   
-   function coll(acc, param) {
-        if (param) {
-          {
-            var cs = param[1];
-            var c = param[0];
-            if (list.mem(c, acc)) return coll(acc, cs);     // usava memq
-            return coll(collect(acc, c), cs);
-          }
-        }
-        return acc;
-      }
+   function coll(acc, lst) {
+      if (!lst)
+         return acc;
+
+      var cs = lst[1];
+      var c = lst[0];
+      if (list.mem(c, acc))
+         return coll(acc, cs);     // usava memq
+      
+      return coll(collect(acc, c), cs);
+   }
    
    function collect(acc, lnk) {
         return coll(util.unionq(lnk, acc), get_connectors(lnk));
